@@ -22,11 +22,15 @@ from pygal.graph.graph import Graph
 from pygal.util import alter, compute_scale, cut, decorate
 from pygal.view import PolarThetaLogView, PolarThetaView
 
-
 class Gauge(Graph):
     """Gauge graph class"""
 
     needle_width = 1 / 20
+
+    def __init__(self, *args, reverse_direction=False, **kwargs):
+        """Initialize the gauge with direction configuration"""
+        super(Gauge, self).__init__(*args, **kwargs)
+        self.reverse_direction = reverse_direction
 
     def _set_view(self):
         """Assign a view to current graph"""
@@ -132,7 +136,10 @@ class Gauge(Graph):
             self.min_ -= 1
             self.max_ += 1
 
-        self._box.set_polar_box(0, 1, self.min_, self.max_)
+        if self.reverse_direction:
+            self._box.set_polar_box(0, 1, self.max_, self.min_)
+        else:
+            self._box.set_polar_box(0, 1, self.min_, self.max_)
 
     def _compute_x_labels(self):
         pass
